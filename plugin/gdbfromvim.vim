@@ -1,5 +1,5 @@
 "
-" GDB from vim - A vim plugin to interact with GDB
+" GdbFromVim - A vim plugin to interact with GDB
 " Copyright (C) 2012  Fernando Castillo
 "
 " This program is free software; you can redistribute it and/or
