@@ -1,0 +1,90 @@
+*gdbfromvim.txt*  A vim plugin to interact with GDB
+
+================================================================================
+CONTENTS                                                   *Gdbfromvim-contents*
+
+    1. Intro ................................. |GdbFromVimIntro|
+    2. Usage ................................. |GdbFromVimUsage|
+        2.1 GdbFromVimRun .................... |GdbFromVimRun|
+    3. Configuration ......................... |GdbFromVimConfig|
+        3.1 gdb_from_vim_app ................. |gdb_from_vim_app|
+        3.2 gdb_from_vim_args ................ |gdb_from_vim_args|
+    4. License ............................... |GdbFromVimLicense|
+    5. Bugs .................................. |GdbFromVimBugs|
+    6. Credits ............................... |GdbFromVimCredits|
+================================================================================
+1. Intro                                                       *GdbFromVimIntro*
+
+This pluging lets you debug your applications with gdb from vim, there is no
+need to open a gdb instance like other plugins do.
+Gdbfromvim relies on gdblib which spawns its own gdb instance.
+================================================================================
+2. Usage                                                       *GdbFromVimUsage*
+
+In order to make easier handling GdbFromVim you might find these mappings handy:
+
+    nnoremap <F4> :call GdbFromVimRun() <CR>
+    nnoremap <F5> :call GdbFromVimStep() <CR>
+    nnoremap <F6> :call GdbFromVimNext() <CR>
+    nnoremap <F7> :call GdbFromVimAddBreakpoint() <CR>
+    nnoremap <F8> :call GdbFromFromDeleteBreakpoint() <CR>
+    nnoremap <F9> :call GdbFromVimClear() <CR>
+
+--------------------------------------------------------------------------------
+2.1 GdbFromVimRun                                                *GdbFromVimRun*
+
+--------------------------------------------------------------------------------
+2.2 GdbFromVimStep                                              *GdbFromVimStep*
+
+--------------------------------------------------------------------------------
+2.3 GdbFromVimNext                                              *GdbFromVimNext*
+
+--------------------------------------------------------------------------------
+2.4 GdbFromVimAddBreakpoint                            *GdbFromVimAddBreakpoint*
+
+--------------------------------------------------------------------------------
+2.5 GdbFromVimDeleteBreakpoint                      *GdbFromVimDeleteBreakpoint*
+
+--------------------------------------------------------------------------------
+2.5 GdbFromVimClear                                            *GdbFromVimClear*
+
+--------------------------------------------------------------------------------
+2.5 GdbFromVimPrint                                            *GdbFromVimPrint*
+
+
+================================================================================
+3. Configuration                                              *GdbFromVimConfig*
+
+GdbFromVim requires that you specify the application to debug:
+let g:GdbFromVim_App=application
+
+--------------------------------------------------------------------------------
+3.1 g:gdb_from_vim_app = application             *gdb_from_vim_app*
+
+Sets the application to debug with gdb.
+
+Default: ''
+
+--------------------------------------------------------------------------------
+3.2 g:gdb_from_vim_args = application arguments   *gdb_from_vim_args*
+
+Sets the application arguments passed when the application runs.
+
+Default: ''
+
+================================================================================
+4. License                                                   *GdbFromVimLicense*
+
+GdbFromVim is licensed under a GPL2 license.
+
+================================================================================
+5. Bugs                                                         *GdbFromVimBugs*
+
+If you find a bug please let me know by opening an issue at:
+https://github.com/skibyte/gdb-from-vim/issues
+================================================================================
+6. Credits                                                   *GdbFromVimCredits*
+
+Author: Fernando Castillo skibyte@gmail.com
+
+================================================================================

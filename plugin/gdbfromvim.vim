@@ -30,16 +30,12 @@ endif
 " TODO: Implement attach pid support
 " TODO: Implement python3 support
 
-map <F4> :call VimGdbRun() <CR>
-map <F5> :call VimGdbStep() <CR>
-map <F6> :call VimGdbNext() <CR>
-map <F7> :call VimGdbAddBreakpoint() <CR>
 let s:gdbConnected = 0
 python << EOF
 import vim
 from gdblib.gdb import GDB
 
-class VimGdbUpdater():
+class GdbFromVimUpdater():
     def newFileLocation(self, buf, line):
         vim.command("e " + buf);
         window = vim.current.window
@@ -48,20 +44,20 @@ class VimGdbUpdater():
     def newContent(self, line):
        print line 
 try:
-    updater = VimGdbUpdater()
+    updater = GdbFromVimUpdater()
     gdb = GDB()
 except Exception,e:
     print e
 EOF
 
-function! VimGdbOpen()
+function! GdbFromVimOpen()
     au BufEnter * set cursorline 
-    au VimLeavePre * call VimGdbClose()
+    au VimLeavePre * call GdbFromVimClose()
     set cursorline
 python << EOF
 try:
-    app = vim.eval("g:VimGdb_App")
-    args = vim.eval("g:VimGdb_Args")
+    app = vim.eval("g:gdb_from_vim_app")
+    args = vim.eval("g:gdb_from_vim_args")
     gdb.connectApp(app, args)
     gdb.addNewFileLocationListener(updater)
     gdb.addStandardOutputListener(updater)
@@ -71,15 +67,14 @@ except Exception,e:
 EOF
 endfunction
 
-function! VimGdbOpenIfNeeded()
+function! GdbFromVimOpenIfNeeded()
     if s:gdbConnected == 0
-        call VimGdbOpen()
+        call GdbFromVimOpen()
     endif
 endfunction
 
-function! VimGdbAddBreakpoint()
-    call VimGdbOpenIfNeeded()
-
+function! GdbFromVimAddBreakpoint()
+    call GdbFromVimOpenIfNeeded()
 python << EOF
 try:
     my = vim.current.buffer
@@ -91,13 +86,13 @@ except Exception,e:
 EOF
 endfunction
 
-function! VimGdbApplication(application)
-    let g:VimGdbApp = a:application
+function! GdbFromVimApplication(application)
+    let g:GdbFromVimApp = a:application
 endfunction
 
 
-function! VimGdbRun()
-    call VimGdbOpenIfNeeded()
+function! GdbFromVimRun()
+    call GdbFromVimOpenIfNeeded()
 python << EOF
 try:
     gdb.run()
@@ -106,8 +101,8 @@ except Exception,e:
 EOF
 endfunction
 
-function! VimGdbStep()
-    call VimGdbOpenIfNeeded()
+function! GdbFromVimStep()
+    call GdbFromVimOpenIfNeeded()
 python << EOF
 try:
     gdb.step()
@@ -116,8 +111,8 @@ except Exception,e:
 EOF
 endfunction
 
-function! VimGdbNext()
-    call VimGdbOpenIfNeeded()
+function! GdbFromVimNext()
+    call GdbFromVimOpenIfNeeded()
 python << EOF
 try:
     gdb.next()
@@ -126,7 +121,7 @@ except Exception,e:
 EOF
 endfunction
 
-function! VimGdbClose()
+function! GdbFromVimClose()
 python << EOF
 try:
     gdb.disconnect()
@@ -136,8 +131,8 @@ except Exception,e:
 EOF
 endfunction
 
-function! VimGdbPrint(expression)
-    call VimGdbOpenIfNeeded()
+function! GdbFromVimPrint(expression)
+    call GdbFromVimOpenIfNeeded()
 python << EOF
 try:
     exp = vim.eval('a:expression')
