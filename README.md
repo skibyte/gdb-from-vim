@@ -5,32 +5,44 @@ Gdbfromvim relies on gdblib which spawns its own gdb instance.
 
 ## Requirements
 * Gdb from vim requires Vim 7.3+ compiled with Python support.
-* Python 2.4+
+* Python 2.6+
 * Gdblib - https://github.com/skibyte/gdblib 
 
 ## Usage
 In order to make easier handling GdbFromVim you might find these mappings handy:
 
-    nnoremap <F4> :call GdbFromVimRun() <CR>
-    nnoremap <F5> :call GdbFromVimStep() <CR>
-    nnoremap <F6> :call GdbFromVimNext() <CR>
-    nnoremap <F7> :call GdbFromVimAddBreakpoint() <CR>
-    nnoremap <F8> :call GdbFromFromDeleteBreakpoint() <CR>
-    nnoremap <F9> :call GdbFromVimClear() <CR>
+    nnoremap <F4> :GdbFromVimRun <CR>
+    nnoremap <F5> :GdbFromVimStep <CR>
+    nnoremap <F6> :GdbFromVimNext <CR>
+    nnoremap <F7> :GdbFromVimAddBreakpoint <CR>
+    nnoremap <F8> :GdbFromFromDeleteBreakpoint <CR>
+    nnoremap <F9> :GdbFromVimClear <CR>
 
 ### GdbFromVimRun
+This command starts the executuion of the program 
 
 ### GdbFromVimStep
+This commands steps into a function
 
 ### GdbFromVimNext
+This commands pass over a function
 
 ### GdbFromVimAddBreakpoint
+This command adds a breakpoint in the current line
 
 ### GdbFromVimDeleteBreakpoint
+This command deletes the breakpoint specified by its number, it requires an argument, For example to delete the breakpoint 2:
+    GdbFromVimDeleteBreakpoint 2 
+
+### GdbFromVimDeleteAllBreakpoints
+This command deletes all the breakpoints previously set
 
 ### GdbFromVimClear
+This commands deletes the breakpoint in the current line
 
 ### GdbFromVimPrint
+This command prints the value of a variable, it requires an argument, For example:
+    GdbFromVimPrint point->x
 
 ## Configuration
 

@@ -22,10 +22,7 @@ if !has('python')
 endif
 
 " TODO: Restore values
-" TODO: Change mappings
 " TODO: Implement show breakpoints
-" TODO: Implement delete breakpoint
-" TODO: Implement delete all breakpoints
 " TODO: Implement core dump support
 " TODO: Implement attach pid support
 " TODO: Implement python3 support
@@ -82,6 +79,59 @@ try:
     gdb.addBreakpoint(my.name, int(pos[0]))
 
 except Exception,e:
+    print e
+EOF
+endfunction
+
+function! GdbFromVimClear()
+    call GdbFromVimOpenIfNeeded()
+
+python << EOF
+try:
+    my = vim.current.buffer
+    pos = vim.current.window.cursor
+    gdb.clear(my.name, int(pos[0]))
+
+except Exception,e:
+    print e
+EOF
+endfunction
+
+function! GdbFromVimDeleteBreakpoint(number)
+    call GdbFromVimOpenIfNeeded()
+python << EOF
+try:
+    gdb.deleteBreakpoint(vim.eval("a:number"))
+except Exception, e:
+    print e
+EOF
+endfunction
+
+function! GdbFromVimPrintBreakpoints()
+    call GdbFromVimOpenIfNeeded()
+    call setqflist([])
+python << EOF
+try:
+    breakpoints = gdb.getBreakpoints()
+    
+    for b in breakpoints:
+        vim.command("let entry = {'filename' : '" + b.getSourceFile() + "', "+ 
+        "'lnum' : '" + str(b.getLineNumber()) + "',"+ 
+        "'text' : 'Breakpoint number: " +str(b.getNumber()) +"'}")
+        vim.command("let qflist = getqflist()")
+        vim.command("call add(qflist, entry)")
+        vim.command("call setqflist(qflist)")
+except Exception, e:
+    print e
+EOF
+endfunction
+
+function! GdbFromVimDeleteAllBreakpoints()
+    call GdbFromVimOpenIfNeeded()
+python << EOF
+try:
+    gdb.deleteAllBreakpoints()
+except Exception, e:
     print e
 EOF
 endfunction
