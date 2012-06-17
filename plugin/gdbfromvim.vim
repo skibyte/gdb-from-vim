@@ -93,6 +93,23 @@ except Exception, e:
 EOF
 endfunction
 
+function! GdbFromVimPrintBreakpoints()
+    call GdbFromVimOpenIfNeeded()
+python << EOF
+try:
+    breakpoints = gdb.getBreakpoints()
+    for b in breakpoints:
+        vim.command("let entry = {'filename' : '" + b.getSourceFile() + "', "+ 
+        "'lnum' : '" + str(b.getLineNumber()) + "',"+ 
+        "'text' : 'Breakpoint number: " +str(b.getNumber()) +"'}")
+        vim.command("let qflist = getqflist()")
+        vim.command("call add(qflist, entry)")
+        vim.command("call setqflist(qflist)")
+except Exception, e:
+    print e
+EOF
+endfunction
+
 function! GdbFromVimDeleteAllBreakpoints()
     call GdbFromVimOpenIfNeeded()
 python << EOF
