@@ -37,6 +37,9 @@ This command deletes the breakpoint specified by its number, it requires an argu
 ### GdbFromVimDeleteAllBreakpoints
 This command deletes all the breakpoints previously set
 
+### GdbFromVimClear
+This commands deletes the breakpoint in the current line
+
 ### GdbFromVimPrint
 This command prints the value of a variable, it requires an argument, For example:
     GdbFromVimPrint point->x
