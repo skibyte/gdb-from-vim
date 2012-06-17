@@ -109,9 +109,11 @@ endfunction
 
 function! GdbFromVimPrintBreakpoints()
     call GdbFromVimOpenIfNeeded()
+    call setqflist([])
 python << EOF
 try:
     breakpoints = gdb.getBreakpoints()
+    
     for b in breakpoints:
         vim.command("let entry = {'filename' : '" + b.getSourceFile() + "', "+ 
         "'lnum' : '" + str(b.getLineNumber()) + "',"+ 
