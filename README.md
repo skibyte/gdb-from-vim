@@ -31,7 +31,8 @@ This commands pass over a function
 This command adds a breakpoint in the current line
 
 ### GdbFromVimDeleteBreakpoint
-This command deletes the breakpoint in the current line
+This command deletes the breakpoint specified by its number, it requires an argument, For example to delete the breakpoint 2:
+    GdbFromVimDeleteBreakpoint 2 
 
 ### GdbFromVimDeleteAllBreakpoints
 This command deletes all the breakpoints previously set
