@@ -21,30 +21,27 @@ if !has('python')
     finish
 endif
 
-" TODO: Restore values
-" TODO: Implement show breakpoints
 " TODO: Implement core dump support
 " TODO: Implement attach pid support
 " TODO: Implement python3 support
 
 let s:gdbConnected = 0
-" Commands
-command! -nargs=0 GdbFromVimClear call GdbFromVimClear()
-command! -nargs=0 GdbFromVimAddBreakpoint call GdbFromVimAddBreakpoint()
-command! -nargs=1 GdbFromVimDeleteBreakpoint call GdbFromVimDeleteBreakpoint(<f-args>)
-command! -nargs=0 GdbFromVimDeleteAllBreakpoints call GdbFromVimDeleteAllBreakpoints()
-command! -nargs=0 GdbFromVimPrintBreakpoints call GdbFromVimPrintBreakpoints()
-command! -nargs=0 GdbFromVimRun call GdbFromVimRun()
-command! -nargs=0 GdbFromVimStep call GdbFromVimStep()
-command! -nargs=0 GdbFromVimNext call GdbFromVimNext()
-command! -nargs=1 GdbFromVimPrint call GdbFromVimPrint(<f-args>)
-command! -nargs=0 GdbFromVimClose call GdbFromVimClose()
-
+let s:gdblibNotFound = 0
 
 python << EOF
 import vim
-from gdblib.gdb import GDB
+try:
+    from gdblib.gdb import GDB
+except Exception, e:
+    vim.command("let s:gdblibNotFound = 1")
+EOF
 
+if s:gdblibNotFound == 1
+    echo "Error: Gdblib not found, disabling GdbFromVim plugin"
+    finish
+endif
+
+python << EOF
 class GdbFromVimUpdater():
     def newFileLocation(self, buf, line):
         vim.command("e " + buf);
@@ -59,6 +56,18 @@ try:
 except Exception,e:
     print e
 EOF
+
+" Commands
+command! -nargs=0 GdbFromVimClear call GdbFromVimClear()
+command! -nargs=0 GdbFromVimAddBreakpoint call GdbFromVimAddBreakpoint()
+command! -nargs=1 GdbFromVimDeleteBreakpoint call GdbFromVimDeleteBreakpoint(<f-args>)
+command! -nargs=0 GdbFromVimDeleteAllBreakpoints call GdbFromVimDeleteAllBreakpoints()
+command! -nargs=0 GdbFromVimPrintBreakpoints call GdbFromVimPrintBreakpoints()
+command! -nargs=0 GdbFromVimRun call GdbFromVimRun()
+command! -nargs=0 GdbFromVimStep call GdbFromVimStep()
+command! -nargs=0 GdbFromVimNext call GdbFromVimNext()
+command! -nargs=1 GdbFromVimPrint call GdbFromVimPrint(<f-args>)
+command! -nargs=0 GdbFromVimClose call GdbFromVimClose()
 
 function! GdbFromVimOpen()
     au BufEnter * set cursorline 
