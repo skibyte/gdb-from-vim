@@ -23,12 +23,12 @@ Gdbfromvim relies on gdblib which spawns its own gdb instance.
 
 In order to make easier handling GdbFromVim you might find these mappings handy:
 
-    nnoremap <F4> :call GdbFromVimRun() <CR>
-    nnoremap <F5> :call GdbFromVimStep() <CR>
-    nnoremap <F6> :call GdbFromVimNext() <CR>
-    nnoremap <F7> :call GdbFromVimAddBreakpoint() <CR>
-    nnoremap <F8> :call GdbFromFromDeleteBreakpoint() <CR>
-    nnoremap <F9> :call GdbFromVimClear() <CR>
+    nnoremap <F4> :GdbFromVimRun <CR>
+    nnoremap <F5> :GdbFromVimStep <CR>
+    nnoremap <F6> :GdbFromVimNext <CR>
+    nnoremap <F7> :GdbFromVimAddBreakpoint <CR>
+    nnoremap <F8> :GdbFromFromDeleteBreakpoint <CR>
+    nnoremap <F9> :GdbFromVimClear <CR>
 
 --------------------------------------------------------------------------------
 2.1 GdbFromVimRun                                                *GdbFromVimRun*

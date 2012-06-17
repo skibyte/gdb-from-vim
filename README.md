@@ -4,9 +4,10 @@ need to open a gdb instance like other plugins do.
 Gdbfromvim relies on gdblib which spawns its own gdb instance.
 
 ## Requirements
-* Gdb from vim requires Vim 7.3+ compiled with Python support.
+* GdbFromVim requires Vim 7.3+ compiled with Python support.
 * Python 2.6+
 * Gdblib - https://github.com/skibyte/gdblib 
+* Gdb with MI support
 
 ## Usage
 In order to make easier handling GdbFromVim you might find these mappings handy:
@@ -19,30 +20,33 @@ In order to make easier handling GdbFromVim you might find these mappings handy:
     nnoremap <F9> :GdbFromVimClear <CR>
 
 ### GdbFromVimRun
-This command starts the executuion of the program 
+This command starts the execution of the program.
 
 ### GdbFromVimStep
-This commands steps into a function
+This commands steps into a function.
 
 ### GdbFromVimNext
-This commands pass over a function
+This commands pass over a function.
 
 ### GdbFromVimAddBreakpoint
-This command adds a breakpoint in the current line
+This command adds a breakpoint in the current line.
 
 ### GdbFromVimDeleteBreakpoint
 This command deletes the breakpoint specified by its number, it requires an argument, For example to delete the breakpoint 2:
     GdbFromVimDeleteBreakpoint 2 
 
 ### GdbFromVimDeleteAllBreakpoints
-This command deletes all the breakpoints previously set
+This command deletes all the breakpoints previously set.
 
 ### GdbFromVimClear
-This commands deletes the breakpoint in the current line
+This commands deletes the breakpoint in the current line.
 
 ### GdbFromVimPrint
 This command prints the value of a variable, it requires an argument, For example:
     GdbFromVimPrint point->x
+
+### GdbFromVimPrintBreakpoints
+This command prints all the breakpoints set in the application, the values are printed in the quickfix list.
 
 ## Configuration
 
