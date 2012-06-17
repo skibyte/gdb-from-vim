@@ -86,6 +86,16 @@ except Exception,e:
 EOF
 endfunction
 
+function! GdbFromVimDeleteAllBreakpoints()
+    call GdbFromVimOpenIfNeeded()
+python << EOF
+try:
+    gdb.deleteAllBreakpoints()
+except Exception, e:
+    print e
+EOF
+endfunction
+
 function! GdbFromVimApplication(application)
     let g:GdbFromVimApp = a:application
 endfunction
