@@ -83,6 +83,20 @@ except Exception,e:
 EOF
 endfunction
 
+function! GdbFromVimClear()
+    call GdbFromVimOpenIfNeeded()
+
+python << EOF
+try:
+    my = vim.current.buffer
+    pos = vim.current.window.cursor
+    gdb.clear(my.name, int(pos[0]))
+
+except Exception,e:
+    print e
+EOF
+endfunction
+
 function! GdbFromVimDeleteBreakpoint(number)
     call GdbFromVimOpenIfNeeded()
 python << EOF
