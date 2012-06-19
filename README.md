@@ -20,19 +20,23 @@ In order to make easier handling GdbFromVim you might find these mappings handy:
     nnoremap <F9> :GdbFromVimClear <CR>
 
 ### GdbFromVimRun
-This command starts the execution of the program.
+This command starts the execution of the program. Arguments can be passed to it.
 
 ### GdbFromVimStep
 This commands steps into a function.
 
 ### GdbFromVimNext
-This commands pass over a function.
+This command pass over a function.
+
+### GdbFromVimContinue
+This command continues with the execution of the program
 
 ### GdbFromVimAddBreakpoint
 This command adds a breakpoint in the current line.
 
 ### GdbFromVimDeleteBreakpoint
-This command deletes the breakpoint specified by its number, it requires an argument, For example to delete the breakpoint 2:
+This command deletes the breakpoint specified by its number, it requires an
+argument, For example to delete the breakpoint number 2:
     GdbFromVimDeleteBreakpoint 2 
 
 ### GdbFromVimDeleteAllBreakpoints
@@ -48,13 +52,24 @@ This command prints the value of a variable, it requires an argument, For exampl
 ### GdbFromVimPrintBreakpoints
 This command prints all the breakpoints set in the application, the values are printed in the quickfix list.
 
+### GdbFromVimClose 
+Closes the current gdb connection, this command might be used if you want to change 
+the application to debug at runtime.
+
+### GdbFromVimTty 
+This command is used to redirect the IO to the specified tty passed as argument.
+
 ## Configuration
 
 ### Setting the application to debug
         let g:gdb_from_vim_app = 'application'
 
+If this variable is not defined GdbFromVim will prompt for user input.
+
 ### Settings the arguments for the application
         let g:gdb_from_vim_args = 'arguments'
+
+If arguments are passed to GdbFromVimRun the value of this variable are overriden.
 
 ## License
 GdbFromVim is licensed under a GPL2 license. For more details see the LICENSE file.
