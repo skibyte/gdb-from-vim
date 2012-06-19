@@ -25,9 +25,11 @@ endif
 " TODO: Implement attach pid support
 " TODO: Implement python3 support
 
-let s:gdbConnected = 0
 let s:gdblibNotFound = 0
-
+let s:init = 0
+let s:gdbConnected = 0
+let s:app = ''
+let s:args = ''
 python << EOF
 import vim
 try:
@@ -41,15 +43,13 @@ if s:gdblibNotFound == 1
     finish
 endif
 
+
 python << EOF
 class GdbFromVimUpdater():
     def newFileLocation(self, buf, line):
         vim.command("e " + buf);
         window = vim.current.window
         window.cursor = (int(line),1)
-
-    def newContent(self, line):
-       print line 
 try:
     updater = GdbFromVimUpdater()
     gdb = GDB()
@@ -63,37 +63,96 @@ command! -nargs=0 GdbFromVimAddBreakpoint call GdbFromVimAddBreakpoint()
 command! -nargs=1 GdbFromVimDeleteBreakpoint call GdbFromVimDeleteBreakpoint(<f-args>)
 command! -nargs=0 GdbFromVimDeleteAllBreakpoints call GdbFromVimDeleteAllBreakpoints()
 command! -nargs=0 GdbFromVimPrintBreakpoints call GdbFromVimPrintBreakpoints()
-command! -nargs=0 GdbFromVimRun call GdbFromVimRun()
+command! -nargs=? GdbFromVimRun call GdbFromVimRun(<f-args>)
 command! -nargs=0 GdbFromVimStep call GdbFromVimStep()
+command! -nargs=0 GdbFromVimContinue call GdbFromVimContinue()
 command! -nargs=0 GdbFromVimNext call GdbFromVimNext()
 command! -nargs=1 GdbFromVimPrint call GdbFromVimPrint(<f-args>)
 command! -nargs=0 GdbFromVimClose call GdbFromVimClose()
+command! -nargs=1 -complete=file GdbFromVimTty call GdbFromVimTty(<f-args>)
+
+function! GdbFromVimTty(tty)
+    call GdbFromVimOpenIfNeeded()
+    if s:gdbConnected == 0
+        return
+    endif
+python <<EOF
+try:
+    gdb.setTty(vim.eval("a:tty"))
+except Exception, e:
+    print e
+EOF
+endfunction
+
+function! GdbFromVimInit()
+    if s:init == 0
+        au BufEnter * set cursorline 
+        au VimLeavePre * call GdbFromVimClose()
+        set cursorline
+        let s:init = 1
+    endif
+endfunction
 
 function! GdbFromVimOpen()
-    au BufEnter * set cursorline 
-    au VimLeavePre * call GdbFromVimClose()
-    set cursorline
+    call GdbFromVimInit()
+    if s:gdbConnected == 1
+        call GdbFromVimClose()
+    endif
 python << EOF
 try:
-    app = vim.eval("g:gdb_from_vim_app")
-    args = vim.eval("g:gdb_from_vim_args")
-    gdb.connectApp(app, args)
+    app = vim.eval("s:app")
+    gdb.connectApp(app)
     gdb.addNewFileLocationListener(updater)
-    gdb.addStandardOutputListener(updater)
     vim.command("let s:gdbConnected = 1")
 except Exception,e:
     print e
 EOF
 endfunction
 
+function! PromptForProgram()
+    if exists("g:gdb_from_vim_args")
+        let s:args = g:gdb_from_vim_args
+    endif
+    if exists("g:gdb_from_vim_app")
+        let s:app = g:gdb_from_vim_app
+    endif
+    if len(s:app) > 0
+        return
+    endif
+    call inputsave()
+    let l:input = input('GDBFromVim - enter program path: ', '', 'file')
+    call inputrestore()
+
+    if strlen(l:input) > 0
+        let s:app = l:input
+    endif
+endfunction
+
 function! GdbFromVimOpenIfNeeded()
     if s:gdbConnected == 0
+        call PromptForProgram()
         call GdbFromVimOpen()
     endif
 endfunction
 
+function! GdbFromVimContinue()
+    call GdbFromVimOpenIfNeeded()
+    if s:gdbConnected == 0
+        return
+    endif
+python << EOF
+try:
+    gdb.continueExecution()
+except Exception, e:
+    print e
+EOF
+endfunction
+
 function! GdbFromVimAddBreakpoint()
     call GdbFromVimOpenIfNeeded()
+    if s:gdbConnected == 0
+        return
+    endif
 python << EOF
 try:
     my = vim.current.buffer
@@ -107,7 +166,9 @@ endfunction
 
 function! GdbFromVimClear()
     call GdbFromVimOpenIfNeeded()
-
+    if s:gdbConnected == 0
+        return
+    endif
 python << EOF
 try:
     my = vim.current.buffer
@@ -121,6 +182,9 @@ endfunction
 
 function! GdbFromVimDeleteBreakpoint(number)
     call GdbFromVimOpenIfNeeded()
+    if s:gdbConnected == 0
+        return
+    endif
 python << EOF
 try:
     gdb.deleteBreakpoint(vim.eval("a:number"))
@@ -131,6 +195,9 @@ endfunction
 
 function! GdbFromVimPrintBreakpoints()
     call GdbFromVimOpenIfNeeded()
+    if s:gdbConnected == 0
+        return
+    endif
     call setqflist([])
 python << EOF
 try:
@@ -150,6 +217,9 @@ endfunction
 
 function! GdbFromVimDeleteAllBreakpoints()
     call GdbFromVimOpenIfNeeded()
+    if s:gdbConnected == 0
+        return
+    endif
 python << EOF
 try:
     gdb.deleteAllBreakpoints()
@@ -163,11 +233,19 @@ function! GdbFromVimApplication(application)
 endfunction
 
 
-function! GdbFromVimRun()
+function! GdbFromVimRun(...)
     call GdbFromVimOpenIfNeeded()
+    if s:gdbConnected == 0
+        return
+    endif
+    
+
+    if a:0 > 0
+        let s:args = a:1
+    endif
 python << EOF
 try:
-    gdb.run()
+    gdb.run(vim.eval("s:args"))
 except Exception,e:
     print e
 EOF
@@ -175,6 +253,9 @@ endfunction
 
 function! GdbFromVimStep()
     call GdbFromVimOpenIfNeeded()
+    if s:gdbConnected == 0
+        return
+    endif
 python << EOF
 try:
     gdb.step()
@@ -185,6 +266,9 @@ endfunction
 
 function! GdbFromVimNext()
     call GdbFromVimOpenIfNeeded()
+    if s:gdbConnected == 0
+        return
+    endif
 python << EOF
 try:
     gdb.next()
@@ -194,17 +278,26 @@ EOF
 endfunction
 
 function! GdbFromVimClose()
+    if s:gdbConnected == 0
+        return
+    endif
 python << EOF
 try:
+    gdb.removeNewFileLocationListener(updater)
     gdb.disconnect()
-    vim.command("let s:gdbConnected = 0")
 except Exception,e:
     print e
 EOF
+    let s:gdbConnected = 0
+    let s:app = ''
+    let s:args = ''
 endfunction
 
 function! GdbFromVimPrint(expression)
     call GdbFromVimOpenIfNeeded()
+    if s:gdbConnected == 0
+        return
+    endif
 python << EOF
 try:
     exp = vim.eval('a:expression')
