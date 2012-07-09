@@ -59,6 +59,12 @@ the application to debug at runtime.
 ### GdbFromVimTty 
 This command is used to redirect the IO to the specified tty passed as argument.
 
+### GdbFromVimRemote 
+Used to connect to a remote host.
+
+### GdbFromVimSymbolFile 
+Adds the symbol file passed as argument to gdb.
+
 ## Configuration
 
 ### Setting the application to debug
@@ -66,8 +72,11 @@ This command is used to redirect the IO to the specified tty passed as argument.
 
 If this variable is not defined GdbFromVim will prompt for user input.
 
-### Settings the arguments for the application
+### Setting the arguments for the application
         let g:gdb_from_vim_args = 'arguments'
+
+### Setting the gdb path
+        let g:gdb_from_vim_path = '/usr/bin/gdb'
 
 If arguments are passed to GdbFromVimRun the value of this variable are overriden.
 

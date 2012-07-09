@@ -30,6 +30,11 @@ let s:init = 0
 let s:gdbConnected = 0
 let s:app = ''
 let s:args = ''
+let s:gdbpath = ''
+
+if exists("g:gdb_from_vim_path")
+    let s:gdbpath = g:gdb_from_vim_path
+endif
 python << EOF
 import vim
 try:
@@ -53,7 +58,9 @@ class GdbFromVimUpdater():
 try:
     updater = GdbFromVimUpdater()
     gdb = GDB()
-except Exception,e:
+    if vim.eval("s:gdbpath") != '':
+        gdb.gdbBinary(vim.eval("s:gdbpath"))
+except Exception, e:
     print e
 EOF
 
@@ -69,7 +76,59 @@ command! -nargs=0 GdbFromVimContinue call GdbFromVimContinue()
 command! -nargs=0 GdbFromVimNext call GdbFromVimNext()
 command! -nargs=1 GdbFromVimPrint call GdbFromVimPrint(<f-args>)
 command! -nargs=0 GdbFromVimClose call GdbFromVimClose()
+command! -nargs=1 GdbFromVimRemote call GdbFromVimRemote(<f-args>)
 command! -nargs=1 -complete=file GdbFromVimTty call GdbFromVimTty(<f-args>)
+command! -nargs=1 -complete=file GdbFromVimSymbolFile call GdbFromVimSymbolFile(<f-args>)
+command -nargs=1 -complete=file GdbFromVimGdbPath call GdbFromVimGdbPath(<f-args>)
+command -nargs=1 -complete=file GdbFromVimLoad call GdbFromVimLoad(<f-args>)
+
+function! GdbFromVimLoad(symbol)
+    if s:gdbConnected == 0
+        return
+    endif
+python <<EOF
+try:
+    gdb.load(vim.eval("a:symbol"))
+    print("Loaded symbol...")
+except Exception, e:
+    print e
+EOF
+endfunction
+
+function! GdbFromVimGdbPath(path)
+python <<EOF
+try:
+    gdb.gdbBinary(vim.eval("a:path"))
+except Exception, e:
+    print e
+EOF
+endfunction
+
+function! GdbFromVimRemote(host)
+    call GdbFromVimInit()
+    if s:gdbConnected == 1
+        call GdbFromVimClose()
+    endif
+python <<EOF
+try:
+    gdb.connectRemote(vim.eval("a:host"))
+    gdb.addNewFileLocationListener(updater)
+    vim.command("let s:gdbConnected = 1")
+    print("Gdb connected...")
+except Exception, e:
+    print e
+EOF
+endfunction
+
+function! GdbFromVimSymbolFile(symbol)
+python <<EOF
+try:
+    gdb.symbolFile(vim.eval("a:symbol"))
+    print("Added symbol...")
+except Exception, e:
+    print e
+EOF
+endfunction
 
 function! GdbFromVimTty(tty)
     call GdbFromVimOpenIfNeeded()
@@ -104,6 +163,7 @@ try:
     gdb.connectApp(app)
     gdb.addNewFileLocationListener(updater)
     vim.command("let s:gdbConnected = 1")
+    print("Gdb connected...")
 except Exception,e:
     print e
 EOF
@@ -158,7 +218,7 @@ try:
     my = vim.current.buffer
     pos = vim.current.window.cursor
     gdb.addBreakpoint(my.name, int(pos[0]))
-
+    print("Added breakpoint...")
 except Exception,e:
     print e
 EOF
@@ -174,7 +234,7 @@ try:
     my = vim.current.buffer
     pos = vim.current.window.cursor
     gdb.clear(my.name, int(pos[0]))
-
+    print("Cleared breakpoint...")
 except Exception,e:
     print e
 EOF
@@ -188,6 +248,7 @@ function! GdbFromVimDeleteBreakpoint(number)
 python << EOF
 try:
     gdb.deleteBreakpoint(vim.eval("a:number"))
+    print("Deleted breakpoint...")
 except Exception, e:
     print e
 EOF
@@ -223,6 +284,7 @@ function! GdbFromVimDeleteAllBreakpoints()
 python << EOF
 try:
     gdb.deleteAllBreakpoints()
+    print("Deleted breakpoints...")
 except Exception, e:
     print e
 EOF
@@ -285,6 +347,7 @@ python << EOF
 try:
     gdb.removeNewFileLocationListener(updater)
     gdb.disconnect()
+    print("Gdb closed...")
 except Exception,e:
     print e
 EOF
