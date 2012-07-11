@@ -3,15 +3,29 @@
 ================================================================================
 CONTENTS                                                   *Gdbfromvim-contents*
 
-    1. Intro ................................. |GdbFromVimIntro|
-    2. Usage ................................. |GdbFromVimUsage|
-        2.1 GdbFromVimRun .................... |GdbFromVimRun|
-    3. Configuration ......................... |GdbFromVimConfig|
-        3.1 gdb_from_vim_app ................. |gdb_from_vim_app|
-        3.2 gdb_from_vim_args ................ |gdb_from_vim_args|
-    4. License ............................... |GdbFromVimLicense|
-    5. Bugs .................................. |GdbFromVimBugs|
-    6. Credits ............................... |GdbFromVimCredits|
+    1. Intro ................................... |GdbFromVimIntro|
+    2. Usage ................................... |GdbFromVimUsage|
+        2.1  GdbFromVimRun ..................... |GdbFromVimRun|
+        2.2  GdbFromVimStep .................... |GdbFromVimStep|
+        2.3  GdbFromVimNext .................... |GdbFromVimNext|
+        2.4  GdbFromVimContinue ................ |GdbFromVimContinue|
+        2.5  GdbFromVimAddBreakpoint ........... |GdbFromVimAddBreakpoint|
+        2.6  GdbFromVimDeleteBreakpoint ........ |GdbFromVimDeleteBreakpoint|
+        2.7  GdbFromVimDeleteAllBreakpoints..... |GdbFromVimDeleteAllBreakpoints|
+        2.8  GdbFromVimClear ................... |GdbFromVimClear|
+        2.9  GdbFromVimPrint ................... |GdbFromVimPrint|
+        2.10 GdbFromVimPrintBreakpoints ........ |GdbFromVimPrintBreakpoints|
+        2.11 GdbFromVimClose ................... |GdbFromVimClose|
+        2.12 GdbFromVimTty ..................... |GdbFromVimTty|
+        2.13 GdbFromVimRemote .................. |GdbFromVimRemote|
+        2.14 GdbFromVimSymbolFile .............. |GdbFromVimSymbolFile|
+    3. Configuration ........................... |GdbFromVimConfig|
+        3.1 gdb_from_vim_app ................... |gdb_from_vim_app|
+        3.2 gdb_from_vim_args .................. |gdb_from_vim_args|
+        3.3 gdb_from_vim_path .................. |gdb_from_vim_path|
+    4. License ................................. |GdbFromVimLicense|
+    5. Bugs .................................... |GdbFromVimBugs|
+    6. Credits ................................. |GdbFromVimCredits|
 ================================================================================
 1. Intro                                                       *GdbFromVimIntro*
 
@@ -32,25 +46,68 @@ In order to make easier handling GdbFromVim you might find these mappings handy:
 
 --------------------------------------------------------------------------------
 2.1 GdbFromVimRun                                                *GdbFromVimRun*
+This command starts the execution of the program. Arguments can be passed to it.
 
 --------------------------------------------------------------------------------
 2.2 GdbFromVimStep                                              *GdbFromVimStep*
+This commands steps into a function.
 
 --------------------------------------------------------------------------------
 2.3 GdbFromVimNext                                              *GdbFromVimNext*
+This command pass over a function.
 
 --------------------------------------------------------------------------------
-2.4 GdbFromVimAddBreakpoint                            *GdbFromVimAddBreakpoint*
+2.4 GdbFromVimContinue                                      *GdbFromVimContinue*
+This command continues with the execution of the program, this command is also
+used to start remote debugging.
 
 --------------------------------------------------------------------------------
-2.5 GdbFromVimDeleteBreakpoint                      *GdbFromVimDeleteBreakpoint*
+2.5 GdbFromVimAddBreakpoint                            *GdbFromVimAddBreakpoint*
+This command adds a breakpoint in the current line.
 
 --------------------------------------------------------------------------------
-2.5 GdbFromVimClear                                            *GdbFromVimClear*
+2.6 GdbFromVimDeleteBreakpoint                      *GdbFromVimDeleteBreakpoint*
+This command deletes the breakpoint specified by its number, it requires an
+argument, For example to delete the breakpoint number 2:
+    GdbFromVimDeleteBreakpoint 2 
 
 --------------------------------------------------------------------------------
-2.5 GdbFromVimPrint                                            *GdbFromVimPrint*
+2.7 GdbFromVimDeleteAllBreakpoints              *GdbFromVimDeleteAllBreakpoints*
+This command deletes all the breakpoints previously set.
 
+--------------------------------------------------------------------------------
+2.8 GdbFromVimClear                                            *GdbFromVimClear*
+This commands deletes the breakpoint in the current line.
+
+--------------------------------------------------------------------------------
+2.9 GdbFromVimPrint                                            *GdbFromVimPrint*
+This command prints the value of a variable, it requires an argument, For example:
+    GdbFromVimPrint point->x
+
+--------------------------------------------------------------------------------
+2.10 GdbFromVimPrintBreakpoints                     *GdbFromVimPrintBreakpoints*
+This command prints all the breakpoints set in the application,
+the values are printed in the quickfix list.
+
+--------------------------------------------------------------------------------
+2.11 GdbFromVimClose                                           *GdbFromVimClose*
+Closes the current gdb connection, this command might be used if you want to change 
+the application to debug at runtime.
+
+--------------------------------------------------------------------------------
+2.12 GdbFromVimTty                                               *GdbFromVimTty*
+This command is used to redirect the IO to the specified tty passed as argument.
+
+--------------------------------------------------------------------------------
+2.13 GdbFromVimRemote                                         *GdbFromVimRemote*
+This command is used to perform remote debugging, it receives as argument the
+host and its port:
+
+    GdbFromVimRemote 127.0.0.1:1234
+
+--------------------------------------------------------------------------------
+2.14 GdbFromVimSymbolFile                                 *GdbFromVimSymbolFile*
+Adds the symbol file passed as argument to gdb.
 
 ================================================================================
 3. Configuration                                              *GdbFromVimConfig*
@@ -71,6 +128,13 @@ Default: ''
 Sets the application arguments passed when the application runs.
 
 Default: ''
+
+--------------------------------------------------------------------------------
+3.3 g:gdb_from_vim_path = gdbpath                            *gdb_from_vim_path*
+ Sets the gdb path:
+    let g:gdb_from_vim_path = '/usr/bin/gdb'
+
+Default: 'gdb'
 
 ================================================================================
 4. License                                                   *GdbFromVimLicense*
