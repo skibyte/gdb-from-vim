@@ -29,7 +29,8 @@ This commands steps into a function.
 This command pass over a function.
 
 ### GdbFromVimContinue
-This command continues with the execution of the program
+This command continues with the execution of the program, this command is also
+used to start remote debugging.
 
 ### GdbFromVimAddBreakpoint
 This command adds a breakpoint in the current line.
@@ -59,6 +60,15 @@ the application to debug at runtime.
 ### GdbFromVimTty 
 This command is used to redirect the IO to the specified tty passed as argument.
 
+### GdbFromVimRemote 
+This command is used to perform remote debugging, it receives as argument the
+host and its port:
+
+    GdbFromVimRemote 127.0.0.1:1234
+
+### GdbFromVimSymbolFile 
+Adds the symbol file passed as argument to gdb.
+
 ## Configuration
 
 ### Setting the application to debug
@@ -66,8 +76,11 @@ This command is used to redirect the IO to the specified tty passed as argument.
 
 If this variable is not defined GdbFromVim will prompt for user input.
 
-### Settings the arguments for the application
+### Setting the arguments for the application
         let g:gdb_from_vim_args = 'arguments'
+
+### Setting the gdb path
+        let g:gdb_from_vim_path = '/usr/bin/gdb'
 
 If arguments are passed to GdbFromVimRun the value of this variable are overriden.
 
