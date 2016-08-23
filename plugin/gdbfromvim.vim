@@ -31,14 +31,22 @@ let s:gdbConnected = 0
 let s:app = ''
 let s:args = ''
 let s:gdbpath = ''
+let s:log = 0
 
 if exists("g:gdb_from_vim_path")
     let s:gdbpath = g:gdb_from_vim_path
 endif
+
+if exists("g:gdb_from_vim_log")
+    let s:log = g:gdb_from_vim_log
+endif
+
 python << EOF
 import vim
 try:
     from gdblib.gdb import GDB
+    import gdblib
+    import logging
 except Exception, e:
     vim.command("let s:gdblibNotFound = 1")
 EOF
@@ -48,8 +56,13 @@ if s:gdblibNotFound == 1
     finish
 endif
 
-
 python << EOF
+
+if vim.eval("s:log") == '1':
+    gdblib.log.Logger.enable(True)
+    gdblib.log.Logger.level(logging.DEBUG)
+    gdblib.log.Logger.logToFile('gdb-from-vim.log')
+
 class GdbFromVimUpdater():
     def newFileLocation(self, buf, line):
         vim.command("e " + buf);
