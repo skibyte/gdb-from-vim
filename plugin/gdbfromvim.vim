@@ -79,8 +79,8 @@ command! -nargs=0 GdbFromVimClose call GdbFromVimClose()
 command! -nargs=1 GdbFromVimRemote call GdbFromVimRemote(<f-args>)
 command! -nargs=1 -complete=file GdbFromVimTty call GdbFromVimTty(<f-args>)
 command! -nargs=1 -complete=file GdbFromVimSymbolFile call GdbFromVimSymbolFile(<f-args>)
-command -nargs=1 -complete=file GdbFromVimGdbPath call GdbFromVimGdbPath(<f-args>)
-command -nargs=1 -complete=file GdbFromVimLoad call GdbFromVimLoad(<f-args>)
+command! -nargs=1 -complete=file GdbFromVimGdbPath call GdbFromVimGdbPath(<f-args>)
+command! -nargs=1 -complete=file GdbFromVimLoad call GdbFromVimLoad(<f-args>)
 
 function! GdbFromVimLoad(symbol)
     if s:gdbConnected == 0
